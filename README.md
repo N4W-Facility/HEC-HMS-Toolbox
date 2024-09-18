@@ -1,80 +1,79 @@
 # HEC-HMS Toolbox
 
-La librería de **HEC-HMS Toolbox** fue desarrollada en Matlab versión 2018b para manipular el software de modelación hidrológica HEC-HMS. En principio **HEC-HMS Toolbox** fue diseña para manipular la versión 4.2.1 de HEC-HMS. Sin embargo, si el modo de ejecución del programa, la estructura y lógica de los archivos que configuran el HEC-HMS no cambian, la librería debería poder operar independientemente de la versión. En este sentido, se recomienda al usuario verificar las actualizaciones en versiones posteriores a HEC-HMS 4.2.1.
+The **HEC-HMS Toolbox** library was developed in Matlab version 2018b to manipulate the hydrological modeling software HEC-HMS. Initially, **HEC-HMS Toolbox** was designed to work with version 4.2.1 of HEC-HMS. However, if the execution mode of the program, the structure, and logic of the files that configure HEC-HMS do not change, the library should be able to operate independently of the version. In this sense, it is recommended that the user check for updates in versions later than HEC-HMS 4.2.1.
 
-Por le momento **HEC-HMS Toolbox** es funcional para los modelos de Numero de Curva - SCS y transito con Muskingum. La manipulación para configuraciones diferentes aun no se ha desarrollado. 
+At the moment, **HEC-HMS Toolbox** is functional for Curve Number - SCS models and routing with Muskingum. Manipulation for different configurations has not yet been developed.
 
-# ¿Como configurar una ejecución?
-**HEC-HMS Toolbox** funciona siguiendo el mismo principio en el cual opera HEC-HMS. En este sentido, lo primero que debemos hacer es configurar nuestro proyecto en HEC-HMS, lo que consiste en definir las unidades de modelación y definir los modelos a utilizar. En esta configuración es necesario incluir parámetros de cada una de las unidades así como también incluir las series climáticas a utilizar (eventos de precipitación). En conclusión, todo el modelo en HEC-HMS se debe construir de manera manual, por lo que si al ejecutarlo no generar ningún error, la configuración quedo realizada adecuadamente. 
+# How to set up an execution?
+**HEC-HMS Toolbox** works following the same principle on which HEC-HMS operates. In this sense, the first thing we need to do is set up our project in HEC-HMS, which consists of defining the modeling units and the models to be used. In this configuration, it is necessary to include parameters for each unit as well as the climate series to be used (precipitation events). In conclusion, the entire model in HEC-HMS must be manually built, so if it runs without any errors, the setup was done correctly.
 
-### Puntos importantes para la configuración de un proyecto en HEC-HMS
-Para que un proyecto sea compatible con **HEC-HMS Toolbox** debe tener en cuenta las siguientes consideraciones:
-* Las cuencas debe tener nombre un a combinación alfanumérica sin espacio ni caracteres especiales. Por ejemplo W1001, W1002, ... ect.
-* El nombre de los Time-Series-Gage debe tener el mismo nombre de la cuenca a la cual le corresponde la serie. Por ejemplo Precip Gage W1001, Precip Gage W1002, ... etc. 
-*  Los tramos de río debe tener nombre un a combinación alfanumérica sin espacio ni caracteres especiales. Por ejemplo R101, R102, ... ect.
+### Important points for setting up a project in HEC-HMS
+For a project to be compatible with **HEC-HMS Toolbox**, the following considerations must be taken into account:
+* The basins must be named with an alphanumeric combination without spaces or special characters. For example, W1001, W1002, etc.
+* The name of the Time-Series-Gage must have the same name as the basin to which the series corresponds. For example, Precip Gage W1001, Precip Gage W1002, etc.
+* The river reaches must be named with an alphanumeric combination without spaces or special characters. For example, R101, R102, etc.
 
-### Estructura de capetas y configuración de proyecto
-Cuando ya tengamos configurado el modelo, procedemos a crear un carpeta con la siguiente estructura: 
+### Folder Structure and Project Setup
+Once we have the model configured, we proceed to create a folder with the following structure:
 * DATA
 * CODES
 * MODEL
 * RESULTS
 * TMP
-
-En la capeta **MODEL** vamos a disponer el modelo ya configurado (toda la carpeta que crea HEC-HMS). En la carpeta **DATA** Vamos a disponer los archivos excel :
+  
+In the MODEL folder, we will place the already configured model (the entire folder created by HEC-HMS). In the DATA folder, we will place the Excel files:
 * HEC_HMS.csv
 * Group_River.csv
 * Group_Basin.csv
 
-### Script para ejecución de HEC-HMS
+### Script for HEC-HMS Execution
+Once this setup is complete, we create a script in the CODES folder in MATLAB to manipulate the model. In this script, we must include the following lines of code:
 
-Realizada esta configuración creamos en la carpeta CODES un script en MATLAB para manipular el modelo. En este debemos incluir las siguiente lineas de código:
-
-* Llamado de la librería de  **HEC-HMS Toolbox** a Folder por Default de MATLAB
+* Calling the HEC-HMS Toolbox library from MATLAB's default folder.
 ```
 addpath('C:\Users\User\Desktop\HEC-HMS-Toolbox')
 ```
-* Definición del directorio creado para el proyecto (es la carpeta con la estructura creada anteriormente)
+* Definition of the Project Directory (the folder with the previously created structure)
 ```
 PathControl     = 'C:\Users\User\Desktop\HEC-HMS-Toolbox\MyProject-HEC';
 ```
-* Directorio donde se encuentra instalado HEC-HMS
+* Directory where HEC-HMS is installed
 ```
 PathHEC_HMS     = 'C:\Program Files (x86)\HEC\HEC-HMS\4.2.1';
 ```
-* Directorio donde se encuentra instalado HEC-DSS
+* Directory where HEC-DSS is installed
 ```
 Path_HEC_DSS    = 'C:\Program Files (x86)\HEC\HEC-DSSVue';
 ```
-* Directorio donde se encuentra nuestro modelo 
+* Directory where our model is located
 ```
 % PathModel       = 'C:\Users\User\Desktop\HEC-HMS-Toolbox\MyProject-HEC\MODEL\MyModel-HEC';
 ```
-* Nombre del proyecto creado en HEC-HMS
+* Project name created in HEC-HMS
 ```
 NameModel       = 'My-HEC';
 ```
-* Nombre de la corrida configurada en HEC-HMS
+* Name of the run configured in HEC-HMS
 ```
 NameRun         = 'Run_1';
 ```
-* Fecha inicial desde la cual se va a ejecutar HEC-HMS.
+* Start date from which HEC-HMS will be executed
 ```
 Date_Init       = datetime(2019,10,28,1,0,0);
 ```
-* Fecha final hasta la cual se va a ejecutar HEC-HMS.
+* End date until which HEC-HMS will be executed
 ```
 Date_End        = datetime(2019,10,30,0,0,0);
 ```
-Es muy importante que las fechas de inicio y fin de la ejecución de HEC-HMS, se encuentren debidamente alimentadas con los datos climáticos, de lo contrario generar error. Es decir, las fechas de ejecución del modelo deben ser las mis que los eventos de lluvia configurados.
+It is very important that the start and end dates of the HEC-HMS execution are properly provided with the climate data; otherwise, an error will occur. That is, the model execution dates must be the same as the configured rainfall events.
 
-* Nombre del nodo de desembocadura del área configurada en HEC-HMS
+* Name of the outlet node of the area configured in HEC-HMS
 ```
 Name_Output = 'Pte_Av_Domingo_Diaz';
 ```
 * Definición de los pasos de tiempo de ejecución y de los eventos de lluvias configurados. HEC-HMS presenta por default los siguiente pasos de tiempo los cuales han sigo codificados de la siguiente manera:
 
-| Código | Tiempo HEC-HMS|
+| Code | HEC-HMS Time|
 |--|--|
 |   1   | 1 MIN |
 |   2   | 2 MIN |
@@ -94,53 +93,52 @@ Name_Output = 'Pte_Av_Domingo_Diaz';
 |   16  | 8 HOUR |
 |   17  | 12 HOUR |
 
-En este sentido, si queremos que el paso de tiempo en el cual se ejecute HEC-HMS sea de 5 Minutos, debemos tomar el código 5; 
+In this sense, if we want the time step in which HEC-HMS is executed to be 5 minutes, we must use code 5:
 ```
 Code_dt_Run_Model = 5;
 ```
-Ahora bien, los pasos de tiempo de la ejecución y el de los eventos no avariciosamente deben ser igual, por lo que también se debe definir éste paso de tiempo.  Por ejemplo  si la serie esta configurada cada hora, el código seria 12.
+Now, the time steps for the execution and the events do not necessarily have to be the same, so this time step must also be defined. For example, if the series is configured hourly, the code would be 12.
 ```
 Code_dt_TimeSeries = 12;
 ```
-Cuando HEC-HMS genera un proyecto, éste crea un .dss el cual es la base de datos con la cual opera HEC-HMS. En este archivo guarda todas las series de tiempo de cada una de las cuencas configuradas en el proyecto. HEC estructura las series de los eventos al interior del dss de la siguiente manera:
-* Number : es el id de la serie
-* Part A : Es un campo para identificar a que escenario corresponde la serie
-* Part B: Es el nombre de Gauges creado en HEC-HMS
-* Part C: Es el tipo de variable. para precipitación por default es PRECIP-INC
-* Part D/ Range: es la fecha de de inicio de la serie de tiempo
-* Part E: Es el paso de tiempo de la serie de tiempo
+When HEC-HMS generates a project, it creates a .dss file, which is the database HEC-HMS operates with. The DSS file saves all the time series for each of the basins configured in the project. HEC structures the series of events inside the DSS as follows:
+* Number: is the series ID
+* Part A: is a field to identify the scenario to which the series belongs
+* Part B: is the name of the Gauges created in HEC-HMS
+* Part C: is the type of variable; for precipitation by default, it is PRECIP-INC
+* Part D/Range: is the start date of the time series
+* Part E: is the time step of the time series
 * Part F: GAGE
 
-Para finalizar la configuración, debemos brindar la Part A, C y F. Por ejemplo:
+To finalize the configuration, we need to provide Part A, C, and F. For example:
 ```
 A = 'HIST_TR_100';
 C = 'PRECIP-INC';
 F = 'GAGE';
 ```
-Con la información anteriormente configuradas podemos crear un Objeto en MATLAB que representa un ejecución. 
+With the above-configured information, we can create an object in MATLAB that represents an execution.
 ```
 Model = HEC_HMS( PathModel, PathHEC_HMS, Path_HEC_DSS, PathControl,...
                                      NameModel, NameRun, Date_Init, Date_End,...
                                      Code_dt_Run_Model, Code_dt_TimeSeries,...
                                      A, C, F);
 ```
-Para ejecutar HEC-HMS ejecutamos el siguiente comando 
+To execute HEC-HMS, we run the following command:
 ```
 Model.Cal_Lag;
 Model.Run_HEC_HMS;
 ```
 
-##  ¿Como configurar archivo HEC-HMS.csv? 
-El archivo HEC-HMS contiene la información de las parametrización del modelo, para cada una de las unidades configuradas.
-Este archivo contiene las siguientes columnas.
-* NameBasin -> Nombre de las cuencas configuradas
-* NameRiver -> Nombre de los segmentos de río configurados para transito
-* AreaBasin -> Área de la cuenca (km2)
-* Slope -> Pendiente de la cuenca (%)
-* Longest -> Longitud del tramo de río (m)
-* GroupRiver -> Numero de grupos para segmentar parámetros entre tramos de río
-* GroupBasin -> Numero de grupos para segmentar parámetros entre cuencas
-* Alpha_Ia -> Parámetro alfa para condición inicial en el método de numero de curva
-* K -> Paramento de Muskingum
-* X -> Paramento de Muskingum
-* Step -> Paramento de Muskingum. Discretización numérica
+## How to configure the HEC-HMS.csv file?
+The HEC-HMS file contains the model parameterization information for each configured unit. This file contains the following columns:
+* NameBasin -> Name of the configured basins
+* NameRiver -> Name of the river segments configured for routing
+* AreaBasin -> Basin area (km2)
+* Slope -> Basin slope (%)
+* Longest -> Length of the river reach (m)
+* GroupRiver -> Number of groups for segmenting parameters between river reaches
+* GroupBasin -> Number of groups for segmenting parameters between basins
+* Alpha_Ia -> Alpha parameter for initial condition in the curve number method
+* K -> Muskingum parameter
+* X -> Muskingum parameter
+* Step -> Muskingum parameter. Numerical discretization
